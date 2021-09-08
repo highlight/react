@@ -1,0 +1,20 @@
+name: Highlight React
+on:
+  push:
+jobs:
+  upload:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Setup Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 15.11.0
+          registry-url: https://registry.npmjs.org
+      - name: Install main dependencies
+      - name: Publish
+        # if: github.ref == 'refs/heads/master'
+        run: yarn publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
