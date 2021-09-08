@@ -1,21 +1,22 @@
 import React, { ErrorInfo } from "react";
-import { ReportDialogProps } from "../ReportDialog/ReportDialog";
+import ReportDialog, {
+  ReportDialogOptions,
+} from "../ReportDialog/ReportDialog";
 
 export type FallbackRender = (errorData: {
   error: Error;
   componentStack: string | null;
-  eventId: string | null;
   resetError(): void;
 }) => React.ReactElement;
 
 export type ErrorBoundaryProps = {
-  /** If a Sentry report dialog should be rendered on error */
+  /** If a Highlight report dialog should be rendered on error */
   showDialog?: boolean;
   /**
-   * Options to be passed into the Sentry report dialog.
+   * Options to be passed into the Highlight report dialog.
    * No-op if {@link showDialog} is false.
    */
-  dialogOptions?: ReportDialogProps;
+  dialogOptions?: ReportDialogOptions;
   /**
    * A fallback component that gets rendered when the error boundary encounters an error.
    *
@@ -26,35 +27,27 @@ export type ErrorBoundaryProps = {
    */
   fallback?: React.ReactElement | FallbackRender;
   /** Called when the error boundary encounters an error */
-  onError?(error: Error, componentStack: string, eventId: string): void;
+  onError?(error: Error, componentStack: string): void;
   /** Called on componentDidMount() */
   onMount?(): void;
   /** Called if resetError() is called from the fallback render props function  */
-  onReset?(
-    error: Error | null,
-    componentStack: string | null,
-    eventId: string | null
-  ): void;
+  onReset?(error: Error | null, componentStack: string | null): void;
   /** Called on componentWillUnmount() */
-  onUnmount?(
-    error: Error | null,
-    componentStack: string | null,
-    eventId: string | null
-  ): void;
-  /** Called before the error is captured by Sentry, allows for you to add tags or context using the scope */
+  onUnmount?(error: Error | null, componentStack: string | null): void;
+  /** Called before the error is captured by Highlight, allows for you to add tags or context using the scope */
   beforeCapture?(error: Error | null, componentStack: string | null): void;
 };
 
 interface ErrorBoundaryState {
   componentStack: string | null;
   error: Error | null;
-  eventId: string | null;
+  showingDialog: boolean;
 }
 
 const INITIAL_STATE: ErrorBoundaryState = {
   componentStack: null,
   error: null,
-  eventId: null,
+  showingDialog: false,
 };
 
 export class ErrorBoundary extends React.Component<
@@ -63,80 +56,101 @@ export class ErrorBoundary extends React.Component<
 > {
   public state: ErrorBoundaryState = INITIAL_STATE;
 
-  //   static getDerivedStateFromError(error: Error) {
-  //     // Update state so the next render will show the fallback UI.
-  //     return { error };
-  //   }
-
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    console.log("componenet did catch");
-    const { beforeCapture, onError, showDialog, dialogOptions } = this.props;
-    console.info("boba");
-    console.error("Uncaught error:", error, errorInfo);
-    console.log(dialogOptions);
+    const { beforeCapture, onError, showDialog } = this.props;
 
     if (beforeCapture) {
       beforeCapture(error, errorInfo.componentStack);
     }
-    const eventId = captureReactErrorBoundaryError(
-      error,
-      errorInfo.componentStack
-    );
+    captureReactErrorBoundaryError(error, errorInfo.componentStack);
     if (onError) {
-      onError(error, errorInfo.componentStack, eventId);
+      onError(error, errorInfo.componentStack);
     }
     if (showDialog) {
-      //       showReportDialog({ ...dialogOptions, eventId });
-      console.log("show");
+      this.setState({ ...this.state, showingDialog: true });
     }
 
     // componentDidCatch is used over getDerivedStateFromError
     // so that componentStack is accessible through state.
-    this.setState({ error, componentStack: errorInfo.componentStack, eventId });
+    this.setState({ error, componentStack: errorInfo.componentStack });
   }
 
-  //   public componentDidMount(): void {
-  //     const { onMount } = this.props;
-  //     if (onMount) {
-  //       onMount();
-  //     }
-  //   }
+  public componentDidMount(): void {
+    const { onMount } = this.props;
+    if (onMount) {
+      onMount();
+    }
+  }
 
-  //   public componentWillUnmount(): void {
-  //     const { error, componentStack, eventId } = this.state;
-  //     const { onUnmount } = this.props;
-  //     if (onUnmount) {
-  //       onUnmount(error, componentStack, eventId);
-  //     }
-  //   }
+  public componentWillUnmount(): void {
+    const { error, componentStack } = this.state;
+    const { onUnmount } = this.props;
+    if (onUnmount) {
+      onUnmount(error, componentStack);
+    }
+  }
 
   resetErrorBoundary: () => void = () => {
     const { onReset } = this.props;
-    const { error, componentStack, eventId } = this.state;
+    const { error, componentStack } = this.state;
     if (onReset) {
-      onReset(error, componentStack, eventId);
+      onReset(error, componentStack);
     }
     this.setState(INITIAL_STATE);
   };
 
-  render() {
-    console.log(this.state);
+  hideDialog: () => void = () => {
+    this.setState({ ...this.state, showingDialog: false });
+  };
 
-    if (this.state.error) {
-      return (
-        <main>
-          <h1>Sorry.. there was an error</h1>
-        </main>
-      );
+  render() {
+    const { fallback, children } = this.props;
+    const { error, componentStack, showingDialog } = this.state;
+
+    if (error) {
+      let element: React.ReactElement | undefined = undefined;
+      if (typeof fallback === "function") {
+        element = fallback({
+          error,
+          componentStack,
+          resetError: this.resetErrorBoundary,
+        });
+      } else {
+        element = fallback;
+      }
+
+      if (React.isValidElement(element)) {
+        return (
+          <>
+            {showingDialog && (
+              <ReportDialog
+                {...this.props.dialogOptions}
+                onCloseHandler={this.hideDialog}
+              />
+            )}
+            {element}
+          </>
+        );
+      }
+
+      if (fallback) {
+        console.warn("fallback did not produce a valid ReactElement");
+      }
+
+      // Fail gracefully if no fallback provided or is not valid
+      return null;
     }
 
-    return this.props.children;
+    if (typeof children === "function") {
+      return children();
+    }
+
+    return children;
   }
 }
 
 /**
- * Logs react error boundary errors to Sentry. If on React version >= 17, creates stack trace
- * from componentStack param, otherwise relies on error param for stacktrace.
+ * Logs react error boundary errors to Highlight.
  *
  * @param error An error captured by React Error Boundary
  * @param componentStack The component stacktrace
@@ -144,12 +158,11 @@ export class ErrorBoundary extends React.Component<
 function captureReactErrorBoundaryError(
   error: Error,
   componentStack: string
-): string {
+): void {
   const errorBoundaryError = new Error(error.message);
   errorBoundaryError.name = `React ErrorBoundary ${errorBoundaryError.name}`;
   errorBoundaryError.stack = componentStack;
 
   console.log(errorBoundaryError);
-
-  return "";
+  console.log(error);
 }

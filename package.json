@@ -56,7 +56,8 @@
     "@babel/preset-react": "^7.14.5",
     "@babel/preset-typescript": "^7.15.0",
     "cross-env": "^7.0.3",
-    "rimraf": "^3.0.2"
+    "rimraf": "^3.0.2",
+    "typescript-plugin-css-modules": "^3.4.0"
   },
   "files": [
     "/dist",
