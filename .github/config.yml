@@ -1,5 +1,5 @@
 name: Highlight React
-on: push
+on: [push, pull_request]
 jobs:
   upload:
     runs-on: ubuntu-latest
