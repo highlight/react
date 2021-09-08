@@ -1,1 +1,1 @@
-export * from './exampleModule'
+export * from "./components/ErrorBoundary/ErrorBoundary";
