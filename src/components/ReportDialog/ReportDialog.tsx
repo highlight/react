@@ -28,7 +28,7 @@ const ReportDialog = ({
   labelName = "Name",
   labelSubmit = "Submit",
   subtitle2 = "If you’d like to help, tell us what happened below.",
-  subtitle = "Our team has been notified",
+  subtitle = "Our team has been notified.",
   successMessage = "Your feedback has been sent. Thank you!",
   title = "It looks like we’re having issues.",
   user,
