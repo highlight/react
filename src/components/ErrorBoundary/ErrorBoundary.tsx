@@ -168,7 +168,8 @@ function captureReactErrorBoundaryError(
 ): void {
   const errorBoundaryError = new Error(` ${error.message}`);
   errorBoundaryError.name = `React ErrorBoundary ${error.name}`;
-  errorBoundaryError.stack = `${componentStack}`;
+  //   errorBoundaryError.stack = `${componentStack}`;
+  errorBoundaryError.stack = error.stack;
 
   const componentName = getComponentNameFromStack(componentStack);
 
