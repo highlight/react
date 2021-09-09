@@ -1,4 +1,5 @@
 import React, { ErrorInfo } from "react";
+import { H } from "highlight.run";
 import ReportDialog, {
   ReportDialogOptions,
 } from "../ReportDialog/ReportDialog";
@@ -166,10 +167,35 @@ function captureReactErrorBoundaryError(
   error: Error,
   componentStack: string
 ): void {
-  const errorBoundaryError = new Error(error.message);
-  errorBoundaryError.name = `React ErrorBoundary ${errorBoundaryError.name}`;
-  errorBoundaryError.stack = componentStack;
+  const errorBoundaryError = new Error(` ${error.message}`);
+  errorBoundaryError.name = `React ErrorBoundary ${error.name}`;
+  errorBoundaryError.stack = `${componentStack}`;
 
-  console.log(errorBoundaryError);
-  console.log(error);
+  const componentName = getComponentNameFromStack(componentStack);
+
+  H.consumeError(
+    errorBoundaryError,
+    `${
+      componentName
+        ? `ErrorBoundary ${componentName}`
+        : "HighlightErrorBoundary"
+    }`
+  );
+}
+
+function getComponentNameFromStack(componentStack: string): string | undefined {
+  const stack = componentStack.split("\n");
+
+  if (stack.length < 1) {
+    return undefined;
+  }
+
+  const leafComponentLine = stack[1].trim();
+  const tokens = leafComponentLine.split(" ");
+
+  if (tokens.length !== 4) {
+    return undefined;
+  }
+
+  return `<${tokens[1]}>`;
 }
