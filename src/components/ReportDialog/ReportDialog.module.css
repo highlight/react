@@ -35,8 +35,7 @@
 .card {
   border-radius: var(--size-xSmall);
   padding: var(--size-xLarge);
-  min-height: 462px;
-  width: 450px;
+  max-width: 650px;
   background: white;
 }
 
@@ -81,11 +80,10 @@
   width: 100%;
 }
 
-.form .button {
+.button {
   align-items: center;
   display: flex;
   justify-content: center;
-  margin: 8px 0;
   min-height: 40px;
   height: auto;
   padding-bottom: 8px;
@@ -105,6 +103,10 @@
   background: transparent !important;
   color: var(--color-text-primary) !important;
   border: 1px solid var(--color-gray-400) !important;
+}
+
+.confirmationButton {
+  margin-top: var(--size-xxLarge);
 }
 
 .formFooter {

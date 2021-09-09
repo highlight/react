@@ -1,5 +1,5 @@
 import styles from "./ReportDialog.module.css";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 
 export interface ReportDialogOptions {
   user?: {
@@ -37,6 +37,7 @@ const ReportDialog = ({
   const [name, setName] = useState(user?.name || "");
   const [email, setEmail] = useState(user?.email || "");
   const [verbatim, setVerbatim] = useState("");
+  const [sentReport, setSentReport] = useState(false);
 
   const handleSubmit = (event: React.SyntheticEvent) => {
     event.preventDefault();
@@ -47,82 +48,94 @@ const ReportDialog = ({
     };
 
     console.log(userInput);
-
-    onCloseHandler();
+    setSentReport(true);
   };
 
   return (
     <main className={styles.container}>
       <div className={styles.card}>
-        <div>
-          <h1 className={styles.title}>{title}</h1>
-          <h2 className={styles.subtitle}>
-            {subtitle} {subtitle2}
-          </h2>
-        </div>
-
-        <form className={styles.form} onSubmit={handleSubmit}>
-          <label>
-            {labelName}
-            <input
-              type="text"
-              value={name}
-              name="name"
-              autoFocus
-              onChange={(e) => {
-                setName(e.target.value);
-              }}
-            />
-          </label>
-
-          <label>
-            {labelEmail}
-            <input
-              type="email"
-              value={email}
-              name="email"
-              onChange={(e) => {
-                setEmail(e.target.value);
-              }}
-            />
-          </label>
-
-          <label>
-            {labelComments}
-            <textarea
-              value={verbatim}
-              placeholder="I typed in a name then clicked the button"
-              name="verbatim"
-              rows={3}
-              onChange={(e) => {
-                setVerbatim(e.target.value);
-              }}
-            ></textarea>
-          </label>
-
-          <div className={styles.formFooter}>
-            <div className={styles.formActionsContainer}>
-              <button type="submit" className={styles.button}>
-                {labelSubmit}
-              </button>
-              <button
-                className={`${styles.button} ${styles.closeButton}`}
-                onClick={onCloseHandler}
-                type="button"
-              >
-                {labelClose}
-              </button>
+        {!sentReport ? (
+          <>
+            <div>
+              <h1 className={styles.title}>{title}</h1>
+              <h2 className={styles.subtitle}>
+                {subtitle} {subtitle2}
+              </h2>
             </div>
-            <div className={styles.ad}>
-              <p>
-                Crash reports powered by{" "}
-                <a href="https://highlight.run" target="_blank">
-                  Highlight
-                </a>
-              </p>
-            </div>
+            <form className={styles.form} onSubmit={handleSubmit}>
+              <label>
+                {labelName}
+                <input
+                  type="text"
+                  value={name}
+                  name="name"
+                  autoFocus
+                  onChange={(e) => {
+                    setName(e.target.value);
+                  }}
+                />
+              </label>
+
+              <label>
+                {labelEmail}
+                <input
+                  type="email"
+                  value={email}
+                  name="email"
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                  }}
+                />
+              </label>
+
+              <label>
+                {labelComments}
+                <textarea
+                  value={verbatim}
+                  placeholder="I typed in a name then clicked the button"
+                  name="verbatim"
+                  rows={3}
+                  onChange={(e) => {
+                    setVerbatim(e.target.value);
+                  }}
+                ></textarea>
+              </label>
+
+              <div className={styles.formFooter}>
+                <div className={styles.formActionsContainer}>
+                  <button type="submit" className={styles.button}>
+                    {labelSubmit}
+                  </button>
+                  <button
+                    className={`${styles.button} ${styles.closeButton}`}
+                    onClick={onCloseHandler}
+                    type="button"
+                  >
+                    {labelClose}
+                  </button>
+                </div>
+                <div className={styles.ad}>
+                  <p>
+                    Crash reports powered by{" "}
+                    <a href="https://highlight.run" target="_blank">
+                      Highlight
+                    </a>
+                  </p>
+                </div>
+              </div>
+            </form>
+          </>
+        ) : (
+          <div>
+            <h1 className={styles.title}>{successMessage}</h1>
+            <button
+              className={`${styles.button} ${styles.confirmationButton}`}
+              onClick={onCloseHandler}
+            >
+              Close
+            </button>
           </div>
-        </form>
+        )}
       </div>
     </main>
   );

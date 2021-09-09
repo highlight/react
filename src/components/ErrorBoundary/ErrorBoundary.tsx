@@ -138,7 +138,14 @@ export class ErrorBoundary extends React.Component<
       }
 
       // Fail gracefully if no fallback provided or is not valid
-      return null;
+      return (
+        showingDialog && (
+          <ReportDialog
+            {...this.props.dialogOptions}
+            onCloseHandler={this.hideDialog}
+          />
+        )
+      );
     }
 
     if (typeof children === "function") {
