@@ -1,5 +1,4 @@
 import React, { ErrorInfo } from "react";
-import { H } from "highlight.run";
 import ReportDialog, {
   ReportDialogOptions,
 } from "../ReportDialog/ReportDialog";
@@ -173,14 +172,18 @@ function captureReactErrorBoundaryError(
 
   const componentName = getComponentNameFromStack(componentStack);
 
-  H.consumeError(
-    errorBoundaryError,
-    `${
-      componentName
-        ? `ErrorBoundary ${componentName}`
-        : "HighlightErrorBoundary"
-    }`
-  );
+  if (!window.H) {
+    console.warn("You need to install highlight.run as a npm dependency.");
+  } else {
+    window.H.consumeError(
+      errorBoundaryError,
+      `${
+        componentName
+          ? `ErrorBoundary ${componentName}`
+          : "HighlightErrorBoundary"
+      }`
+    );
+  }
 }
 
 function getComponentNameFromStack(componentStack: string): string | undefined {
@@ -199,3 +202,5 @@ function getComponentNameFromStack(componentStack: string): string | undefined {
 
   return `<${tokens[1]}>`;
 }
+
+declare var window: any;
