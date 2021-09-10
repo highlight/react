@@ -41,13 +41,18 @@ const ReportDialog = ({
 
   const handleSubmit = (event: React.SyntheticEvent) => {
     event.preventDefault();
-    const userInput = {
-      name,
-      email,
-      verbatim,
-    };
 
-    console.log(userInput);
+    if (window?.H?.addSessionFeedback) {
+      window.H.addSessionFeedback({
+        verbatim,
+        userName: name,
+        userEmail: email,
+      });
+    } else {
+      console.warn(
+        "Highlight is not initialized. Make sure highlight.run is installed and running."
+      );
+    }
     setSentReport(true);
   };
 
@@ -142,3 +147,5 @@ const ReportDialog = ({
 };
 
 export default ReportDialog;
+
+declare var window: any;
