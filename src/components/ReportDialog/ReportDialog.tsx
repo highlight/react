@@ -1,5 +1,5 @@
 import styles from "./ReportDialog.module.css";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 
 export interface ReportDialogOptions {
   user?: {
@@ -38,6 +38,8 @@ const ReportDialog = ({
   const [email, setEmail] = useState(user?.email || "");
   const [verbatim, setVerbatim] = useState("");
   const [sentReport, setSentReport] = useState(false);
+  // We want to record when the feedback started, not when the feedback is submitted. If we record the latter, the timing could be way off.
+  const reportDialogOpenTime = useRef(new Date().toISOString());
 
   const handleSubmit = (event: React.SyntheticEvent) => {
     event.preventDefault();
@@ -47,8 +49,7 @@ const ReportDialog = ({
         verbatim,
         userName: name,
         userEmail: email,
-        // We want to record when the feedback started, not when the feedback is submitted. If we record the latter, the timing could be way off.
-        timestampOverride: new Date().toISOString(),
+        timestampOverride: reportDialogOpenTime.current,
       });
     } else {
       console.warn(
