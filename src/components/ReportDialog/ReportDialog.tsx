@@ -47,6 +47,8 @@ const ReportDialog = ({
         verbatim,
         userName: name,
         userEmail: email,
+        // We want to record when the feedback started, not when the feedback is submitted. If we record the latter, the timing could be way off.
+        timestampOverride: new Date().toISOString(),
       });
     } else {
       console.warn(
