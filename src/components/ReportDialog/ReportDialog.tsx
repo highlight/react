@@ -123,10 +123,15 @@ const ReportDialog = ({
                   </button>
                 </div>
                 <div className={styles.ad}>
-                  <p>
-                    Crash reports powered by{" "}
+                  <p className={styles.logoContainer}>
+                    Crash reports powered by:
+                    {/*  eslint-disable-next-line react/jsx-no-target-blank */}
                     <a href="https://highlight.run" target="_blank">
-                      Highlight
+                      <img
+                        src="https://app.highlight.run/images/logo.png"
+                        alt="Highlight"
+                        height="24"
+                      />
                     </a>
                   </p>
                 </div>
