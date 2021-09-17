@@ -125,3 +125,10 @@
   flex-shrink: 0;
   font-size: 12px;
 }
+
+.logoContainer {
+  display: flex;
+  flex-direction: column;
+  height: 40px;
+  margin: 0 !important;
+}
