@@ -18,7 +18,8 @@ export interface ReportDialogOptions {
 }
 
 type ReportDialogProps = ReportDialogOptions & {
-  onCloseHandler: () => void;
+  onCloseHandler?: () => void;
+  onSubmitHandler?: () => void;
 };
 
 const ReportDialog = ({
@@ -33,6 +34,7 @@ const ReportDialog = ({
   title = "It looks like we’re having issues.",
   user,
   onCloseHandler,
+  onSubmitHandler,
 }: ReportDialogProps) => {
   const [name, setName] = useState(user?.name || "");
   const [email, setEmail] = useState(user?.email || "");
@@ -57,6 +59,9 @@ const ReportDialog = ({
       );
     }
     setSentReport(true);
+    if (onSubmitHandler) {
+      onSubmitHandler();
+    }
   };
 
   return (
