@@ -36,6 +36,10 @@ export type ErrorBoundaryProps = {
   onUnmount?(error: Error | null, componentStack: string | null): void;
   /** Called before the error is captured by Highlight, allows for you to add tags or context using the scope */
   beforeCapture?(error: Error | null, componentStack: string | null): void;
+  /** Called after the report dialog's cancel button has been activated. */
+  onAfterReportDialogCancelHandler?: () => void;
+  /** Called after the report dialog's submit button has been activated. */
+  onAfterReportDialogSubmitHandler?: () => void;
 };
 
 interface ErrorBoundaryState {
@@ -101,6 +105,16 @@ export class ErrorBoundary extends React.Component<
 
   hideDialog: () => void = () => {
     this.setState({ ...this.state, showingDialog: false });
+
+    if (this.props.onAfterReportDialogCancelHandler) {
+      this.props.onAfterReportDialogCancelHandler();
+    }
+  };
+
+  onReportDialogSubmitHandler: () => void = () => {
+    if (this.props.onAfterReportDialogSubmitHandler) {
+      this.props.onAfterReportDialogSubmitHandler();
+    }
   };
 
   render() {
@@ -126,6 +140,7 @@ export class ErrorBoundary extends React.Component<
               <ReportDialog
                 {...this.props.dialogOptions}
                 onCloseHandler={this.hideDialog}
+                onSubmitHandler={this.onReportDialogSubmitHandler}
               />
             )}
             {element}
@@ -143,6 +158,7 @@ export class ErrorBoundary extends React.Component<
           <ReportDialog
             {...this.props.dialogOptions}
             onCloseHandler={this.hideDialog}
+            onSubmitHandler={this.onReportDialogSubmitHandler}
           />
         )
       );
