@@ -15,6 +15,7 @@ export interface ReportDialogOptions {
   labelClose?: string;
   labelSubmit?: string;
   successMessage?: string;
+  hideHighlightBranding?: boolean;
 }
 
 type ReportDialogProps = ReportDialogOptions & {
@@ -35,6 +36,7 @@ const ReportDialog = ({
   user,
   onCloseHandler,
   onSubmitHandler,
+  hideHighlightBranding = false,
 }: ReportDialogProps) => {
   const [name, setName] = useState(user?.name || "");
   const [email, setEmail] = useState(user?.email || "");
@@ -127,19 +129,21 @@ const ReportDialog = ({
                     {labelClose}
                   </button>
                 </div>
-                <div className={styles.ad}>
-                  <p className={styles.logoContainer}>
-                    Crash reports powered by:
-                    {/*  eslint-disable-next-line react/jsx-no-target-blank */}
-                    <a href="https://highlight.run" target="_blank">
-                      <img
-                        src="https://app.highlight.run/images/logo.png"
-                        alt="Highlight"
-                        height="24"
-                      />
-                    </a>
-                  </p>
-                </div>
+                {!hideHighlightBranding && (
+                  <div className={styles.ad}>
+                    <p className={styles.logoContainer}>
+                      Crash reports powered by:
+                      {/*  eslint-disable-next-line react/jsx-no-target-blank */}
+                      <a href="https://highlight.run" target="_blank">
+                        <img
+                          src="https://app.highlight.run/images/logo.png"
+                          alt="Highlight"
+                          height="24"
+                        />
+                      </a>
+                    </p>
+                  </div>
+                )}
               </div>
             </form>
           </>
