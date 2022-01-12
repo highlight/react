@@ -12,6 +12,8 @@ export type FallbackRender = (errorData: {
 export type ErrorBoundaryProps = {
   /** If a Highlight report dialog should be rendered on error */
   showDialog?: boolean;
+  /** A custom dialog that you can provide to be shown when the ErrorBoundary is shown. */
+  customDialog?: React.ReactNode;
   /**
    * Options to be passed into the Highlight report dialog.
    * No-op if {@link showDialog} is false.
@@ -118,7 +120,7 @@ export class ErrorBoundary extends React.Component<
   };
 
   render() {
-    const { fallback, children } = this.props;
+    const { fallback, children, customDialog } = this.props;
     const { error, componentStack, showingDialog } = this.state;
 
     if (error) {
@@ -150,6 +152,10 @@ export class ErrorBoundary extends React.Component<
 
       if (fallback) {
         console.warn("fallback did not produce a valid ReactElement");
+      }
+
+      if (showingDialog && customDialog) {
+        return customDialog;
       }
 
       // Fail gracefully if no fallback provided or is not valid
