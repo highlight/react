@@ -20,7 +20,7 @@
   --color-gray-800: #2d2f36;
 
   background: hsl(0deg 0% 0% / 75%);
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
