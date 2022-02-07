@@ -149,3 +149,9 @@
   height: 40px;
   margin: 0 !important;
 }
+
+.logo {
+  height: 25px;
+  padding-top: 4px;
+  box-sizing: content-box;
+}
