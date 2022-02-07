@@ -136,9 +136,10 @@ const ReportDialog = ({
                       {/*  eslint-disable-next-line react/jsx-no-target-blank */}
                       <a href="https://highlight.run" target="_blank">
                         <img
-                          src="https://app.highlight.run/images/logo.png"
+                          src="https://app.highlight.run/logo-24x130.png"
                           alt="Highlight"
-                          height="24"
+                          height="25"
+                          className={styles.logo}
                         />
                       </a>
                     </p>
