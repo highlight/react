@@ -1,6 +1,6 @@
 {
   "name": "@highlight-run/react",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "The official Highlight SDK for React",
   "main": "dist/index.js",
   "license": "MIT",
@@ -12,14 +12,9 @@
   },
   "peerDependencies": {
     "react": "^17.0.2",
-    "react-dom": "^17.0.2",
-    "react-scripts": "4.0.3"
+    "react-dom": "^17.0.2"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
     "clean": "rimraf dist",
     "compile": "npm run clean && cross-env NODE_ENV=production babel src/components --extensions \".ts,.tsx\" --out-dir dist --copy-files",
     "build:package": "npm run clean && npm run build:types && npm run build:js",
