@@ -6,7 +6,13 @@ module.exports = function (api) {
     "@babel/preset-react",
     "@babel/preset-typescript",
   ];
-  const plugins = ['css-modules-transform'];
+  const plugins = [
+    [
+      "css-modules-transform", {
+	      "extractCss": "./dist/highlight.css",
+      }
+    ]
+  ];
 
   return {
     presets,
