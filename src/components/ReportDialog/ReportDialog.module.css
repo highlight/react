@@ -56,6 +56,19 @@
   background: white;
 }
 
+.cardContents {
+  height: 0;
+  opacity: 0;
+  transition: visibility 0s, opacity 0.3s linear;
+  visibility: hidden;
+}
+
+.cardContentsVisible {
+  height: auto;
+  opacity: 1;
+  visibility: visible;
+}
+
 .title {
   font-size: var(--size-large);
   color: var(--color-text-primary);
@@ -103,8 +116,6 @@
   justify-content: center;
   min-height: 40px;
   height: auto;
-  padding-bottom: 8px;
-  padding-top: 8px;
   color: var(--color-text-primary-inverted);
   background: var(--brand-color);
   text-shadow: none;
@@ -124,6 +135,11 @@
 
 .confirmationButton {
   margin-top: var(--size-xxLarge);
+}
+
+.loadingButton {
+  background-color: #7e7e7e !important;
+  border: #7e7e7e solid 1px !important;
 }
 
 .formFooter {
