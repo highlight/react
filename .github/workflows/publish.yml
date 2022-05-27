@@ -1,5 +1,8 @@
 name: highlight-react
-on: [push]
+on:
+  push:
+  pull_request_review:
+    types: [submitted]
 jobs:
   upload:
     runs-on: ubuntu-latest
