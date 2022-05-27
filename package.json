@@ -1,6 +1,6 @@
 {
   "name": "@highlight-run/react",
-  "version": "1.1.6",
+  "version": "1.1.7",
   "description": "The official Highlight SDK for React",
   "main": "dist/index.js",
   "license": "MIT",
