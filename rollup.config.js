@@ -16,17 +16,29 @@ const rollupBuilds = [
         format: "umd",
         name: "highlight-react",
         sourcemap: true,
+        globals: {
+          react: "React",
+          "react/jsx-runtime": "jsxRuntime",
+        },
       },
       {
         file: pkg.module,
         format: "es",
         exports: "named",
         sourcemap: true,
+        globals: {
+          react: "React",
+          "react/jsx-runtime": "jsxRuntime",
+        },
       },
     ],
     treeshake: "smallest",
+    external: ["react", "react/jsx-runtime"], // peer dependencies
     plugins: [
-      postcss(),
+      postcss({
+        minimize: true,
+        sourceMap: true,
+      }),
       resolve(),
       esbuild(),
       terser({ mangle: true }),
