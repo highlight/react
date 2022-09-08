@@ -8,6 +8,21 @@ import { terser } from "rollup-plugin-terser";
 import pkg from "./package.json";
 
 const rollupBuilds = [
+  // the first build is just for exporting highlight.css.
+  {
+    input: "./src/index.tsx",
+    output: { file: pkg.main },
+    external: ["react", "react/jsx-runtime"], // peer dependencies
+    plugins: [
+      postcss({
+        minimize: true,
+        sourceMap: true,
+        extract: "highlight.css",
+      }),
+      esbuild(),
+    ],
+  },
+  // the second build replaces the js file produced by the first build.
   {
     input: "./src/index.tsx",
     output: [
